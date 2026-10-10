@@ -1,0 +1,3088 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+
+  <meta name="viewport"
+        content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+
+  <meta name="theme-color" content="#F2F2F7">
+
+  <meta name="description"
+        content="DHRUV — Minimum Cost Campus Network using Minimum Spanning Tree">
+
+  <title>DHRUV — Minimum Cost Campus Network</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    :root {
+      --bg: #f2f2f7;
+      --card: #ffffff;
+      --text: #17171a;
+      --muted: #6b6b73;
+      --primary: #007aff;
+      --green: #34c759;
+      --red: #ff3b30;
+      --border: #dedee5;
+      --shadow: 0 8px 25px rgba(0, 0, 0, 0.08);
+    }
+
+    body {
+      font-family: Arial, Helvetica, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      
+    }
+
+    /* HEADER */
+
+    header {
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      background: rgba(255, 255, 255, 0.94);
+      backdrop-filter: blur(15px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .header-inner {
+      max-width: 1400px;
+      margin: auto;
+      min-height: 72px;
+      padding: 12px 25px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 20px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .brand-logo {
+      width: 48px;
+      height: 48px;
+      border-radius: 14px;
+      background: linear-gradient(135deg, #007aff, #5ac8fa);
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 20px;
+      box-shadow: 0 5px 15px rgba(0, 122, 255, 0.3);
+    }
+
+    .brand h1 {
+      font-size: 21px;
+    }
+
+    .brand p {
+      font-size: 12px;
+      color: var(--muted);
+      margin-top: 3px;
+    }
+
+    nav {
+      display: flex;
+      gap: 7px;
+      flex-wrap: wrap;
+    }
+
+    nav button {
+      border: 0;
+      background: transparent;
+      padding: 10px 13px;
+      border-radius: 10px;
+      cursor: pointer;
+      color: #555;
+      font-weight: 600;
+    }
+
+    nav button:hover,
+    nav button.active {
+      background: #e8f2ff;
+      color: var(--primary);
+    }
+
+    /* MAIN */
+
+    main {
+      max-width: 1400px;
+      margin: auto;
+      padding: 30px 25px 60px;
+    }
+
+    .page {
+      display: none;
+    }
+
+    .page.active {
+      display: block;
+    }
+
+    /* HERO */
+
+    .hero {
+      background: linear-gradient(135deg, #007aff, #5856d6);
+      color: white;
+      padding: 45px;
+      border-radius: 25px;
+      box-shadow: var(--shadow);
+      margin-bottom: 25px;
+    }
+
+    .hero h2 {
+      font-size: 40px;
+      margin-bottom: 12px;
+    }
+
+    .hero p {
+      max-width: 800px;
+      line-height: 1.7;
+      opacity: 0.95;
+    }
+
+    .hero-buttons {
+      margin-top: 25px;
+      display: flex;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      border: none;
+      border-radius: 12px;
+      padding: 12px 18px;
+      cursor: pointer;
+      font-weight: bold;
+      transition: 0.2s;
+    }
+
+    .btn:hover {
+      transform: translateY(-2px);
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-light {
+      background: white;
+      color: #222;
+    }
+
+    .btn-danger {
+      background: var(--red);
+      color: white;
+    }
+
+    /* CARDS */
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 18px;
+      margin-bottom: 25px;
+    }
+
+    .stat-card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 18px;
+      padding: 22px;
+      box-shadow: var(--shadow);
+    }
+
+    .stat-card span {
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    .stat-card strong {
+      display: block;
+      font-size: 30px;
+      margin-top: 8px;
+    }
+
+    .content-grid {
+      display: grid;
+      grid-template-columns: 1.5fr 1fr;
+      gap: 22px;
+    }
+
+    .card {
+      background: var(--card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 24px;
+      box-shadow: var(--shadow);
+    }
+
+    .card h3 {
+      margin-bottom: 15px;
+    }
+
+    .card p {
+      line-height: 1.7;
+      color: #555;
+    }
+
+    /* GRAPH */
+
+    .graph-container {
+      position: relative;
+      width: 100%;
+      min-height: 600px;
+      overflow: hidden;
+      border-radius: 18px;
+      background:
+        linear-gradient(#e9e9ef 1px, transparent 1px),
+        linear-gradient(90deg, #e9e9ef 1px, transparent 1px);
+      background-size: 35px 35px;
+      border: 1px solid var(--border);
+    }
+
+    #graphSvg {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      min-height: 600px;
+      left: 0;
+      top: 0;
+    }
+
+    .edge-line {
+      stroke: #9b9ba2;
+      stroke-width: 3;
+    }
+
+    .edge-line.mst {
+      stroke: var(--green);
+      stroke-width: 7;
+    }
+
+    .edge-cost {
+      fill: #333;
+      font-size: 14px;
+      font-weight: bold;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    /* BUILDING IMAGE STYLES */
+
+    .building-image {
+      cursor: pointer;
+      transition: 0.25s;
+    }
+
+    .building-image:hover {
+      transform: scale(1.08);
+    }
+
+    .building-name {
+      font-size: 13px;
+      font-weight: bold;
+      fill: #17171a;
+    }
+
+    .building-id {
+      font-size: 13px;
+      font-weight: bold;
+      fill: white;
+      text-anchor: middle;
+      dominant-baseline: middle;
+    }
+
+    /* CONTROLS */
+
+    .controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      margin: 20px 0;
+    }
+
+    .algorithm-box {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px;
+      margin-top: 15px;
+    }
+
+    .algorithm-box button {
+      padding: 14px;
+      border-radius: 12px;
+      border: 2px solid var(--border);
+      background: white;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .algorithm-box button:hover {
+      border-color: var(--primary);
+      color: var(--primary);
+    }
+
+    /* TABLE */
+
+    .table-wrapper {
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 15px;
+    }
+
+    th,
+    td {
+      padding: 12px;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    th {
+      background: #f5f5f8;
+    }
+
+    .mst-row {
+      background: #e9f9ed;
+    }
+
+    /* MODAL */
+
+    .modal {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.45);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 200;
+    }
+
+    .modal.show {
+      display: flex;
+    }
+
+    .modal-box {
+      width: min(500px, 100%);
+      background: white;
+      border-radius: 22px;
+      padding: 25px;
+      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.2);
+    }
+
+    .modal-box h3 {
+      margin-bottom: 20px;
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: bold;
+      margin-bottom: 7px;
+    }
+
+    input,
+    select {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      font-size: 15px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+      margin-top: 20px;
+    }
+
+    /* RESULT */
+
+    .result-box {
+      background: #eef8ff;
+      border: 1px solid #b7ddff;
+      border-radius: 15px;
+      padding: 18px;
+      margin-top: 20px;
+    }
+
+    .result-cost {
+      font-size: 35px;
+      font-weight: bold;
+      color: var(--green);
+      margin: 10px 0;
+    }
+
+    .step {
+      padding: 10px;
+      border-bottom: 1px solid var(--border);
+    }
+
+    /* ABOUT */
+
+    .info-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 18px;
+      margin-top: 20px;
+    }
+
+    .info-item {
+      padding: 20px;
+      background: #f7f7fa;
+      border-radius: 15px;
+    }
+
+    .info-item h4 {
+      margin-bottom: 8px;
+    }
+
+    footer {
+      text-align: center;
+      color: var(--muted);
+      padding: 30px;
+      border-top: 1px solid var(--border);
+      margin-top: 30px;
+    }
+
+    /* RESPONSIVE */
+
+    @media (max-width: 1000px) {
+
+      .stats {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .content-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .info-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    @media (max-width: 700px) {
+
+      .header-inner {
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      nav {
+        width: 100%;
+        overflow-x: auto;
+      }
+
+      main {
+        padding: 18px 12px 40px;
+      }
+
+      .hero {
+        padding: 28px 20px;
+      }
+
+      .hero h2 {
+        font-size: 30px;
+      }
+
+      .stats {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .graph-container,
+      #graphSvg {
+        min-height: 500px;
+      }
+    }
+
+    @media (max-width: 480px) {
+
+      .stats {
+        grid-template-columns: 1fr;
+      }
+
+      .algorithm-box {
+        grid-template-columns: 1fr;
+      }
+    }
+
+  </style>
+</head>
+
+<body>
+
+<!-- HEADER -->
+
+<header>
+
+  <div class="header-inner">
+
+    <div class="brand">
+
+      <div class="brand-logo">
+        D
+      </div>
+
+      <div>
+
+        <h1>SANDIP UNIVERSITY CAMPUS NETWORK</h1>
+        <img src="images/sandip.png" alt="SANDIP UNIVERSITY" style="width: 150px; height: auto; margin-top: 5px;">
+
+        <p>
+          Minimum Cost Campus Network
+        </p>
+
+      </div>
+
+    </div>
+
+
+    <nav>
+
+      <button
+        class="nav-btn active"
+        data-page="home">
+        Home
+      </button>
+
+      <button
+        class="nav-btn"
+        data-page="network">
+        Campus Network
+      </button>
+
+      <button
+        class="nav-btn"
+        data-page="algorithms">
+        MST Algorithms
+      </button>
+
+      <button
+        class="nav-btn"
+        data-page="about">
+        About
+      </button>
+
+    </nav>
+
+  </div>
+
+</header>
+
+
+<main>
+
+<!-- HOME -->
+
+<section
+  id="home"
+  class="page active">
+
+  <div class="hero">
+
+    <h2>
+      Minimum Cost Campus Network
+    </h2>
+
+    <p>
+
+      SANDIP University campus network design using
+      
+      <strong>
+        Minimum Spanning Tree (MST)
+      </strong>
+      algorithms to connect all campus buildings
+      with minimum possible network installation cost.
+
+    </p>
+
+
+    <div class="hero-buttons">
+
+      <button
+        class="btn btn-light"
+        onclick="showPage('network')">
+
+        Explore Campus Network
+
+      </button>
+
+
+      <button
+        class="btn btn-light"
+        onclick="showPage('algorithms')">
+
+        Run MST Algorithm
+
+      </button>
+
+    </div>
+
+  </div>
+
+
+  <div class="stats">
+
+    <div class="stat-card">
+
+      <span>
+        Campus Buildings
+      </span>
+
+      <strong id="homeNodes">
+        6
+      </strong>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>
+        Network Connections
+      </span>
+
+      <strong id="homeEdges">
+        9
+      </strong>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>
+        MST Connections
+      </span>
+
+      <strong id="homeMst">
+        5
+      </strong>
+
+    </div>
+
+
+    <div class="stat-card">
+
+      <span>
+        Minimum Cost
+      </span>
+
+      <strong id="homeCost">
+        14
+      </strong>
+
+    </div>
+
+  </div>
+
+
+  <div class="content-grid">
+
+    <div class="card">
+
+      <h3>
+        What is Minimum Spanning Tree?
+      </h3>
+
+      <p>
+
+        A Minimum Spanning Tree is a subset of
+        the edges of a connected weighted graph
+        that connects all vertices without forming
+        cycles and has the minimum possible total
+        edge weight.
+
+      </p>
+
+      <br>
+
+      <p>
+
+       IN THIS PROJECT I AM USING 
+        <strong>
+          Prim's Algorithm
+        </strong>
+        and
+        <strong>
+          Kruskal's Algorithm
+        </strong>
+        to find the Minimum Spanning Tree of the
+        campus network graph. 
+        I USED OUR COLLAGE SANDIP UNIVERSITY CAMPUS MAP TO DESIGN THE GRAPH AND FIND THE MINIMUM COST NETWORK CONNECTION.
+      </p>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        Project Objective
+      </h3>
+
+      <p>
+
+        The main objective is to design a campus
+        network that connects every important
+        building while minimizing the total
+        installation cost.
+
+      </p>
+
+      <br>
+
+      <ul
+        style="line-height:2;padding-left:20px;">
+
+        <li>
+          Represent campus as a weighted graph
+        </li>
+
+        <li>
+          Find the Minimum Spanning Tree
+        </li>
+
+        <li>
+          Remove unnecessary connections
+        </li>
+
+        <li>
+          Calculate minimum total cost
+        </li>
+
+        <li>
+          Compare Prim and Kruskal algorithms
+        </li>
+
+      </ul>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- CAMPUS NETWORK -->
+
+<section
+  id="network"
+  class="page">
+
+  <div class="card">
+
+    <h2>
+      Campus Network Graph
+    </h2>
+
+    <p>
+
+      Each building is represented using a
+      campus image. Each line represents a
+      possible network connection. The number
+      on the line represents the connection cost.
+
+    </p>
+
+
+    <div class="controls">
+
+      <button
+        class="btn btn-primary"
+        onclick="openBuildingModal()">
+
+        + Add Building
+
+      </button>
+
+
+      <button
+        class="btn btn-primary"
+        onclick="openEdgeModal()">
+
+        + Add Connection
+
+      </button>
+
+
+      <button
+        class="btn btn-danger"
+        onclick="resetCampus()">
+
+        Reset Campus
+
+      </button>
+
+    </div>
+
+
+    <div class="graph-container">
+
+      <svg
+        id="graphSvg"
+        viewBox="0 0 900 600"
+        preserveAspectRatio="xMidYMid meet">
+
+      </svg>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="card"
+    style="margin-top:22px;">
+
+    <h3>
+      Campus Connections
+    </h3>
+
+
+    <div class="table-wrapper">
+
+      <table>
+
+        <thead>
+
+          <tr>
+
+            <th>
+              Building A
+            </th>
+
+            <th>
+              Building B
+            </th>
+
+            <th>
+              Cost
+            </th>
+
+            <th>
+              MST
+            </th>
+
+          </tr>
+
+        </thead>
+
+
+        <tbody id="edgeTable">
+        </tbody>
+
+      </table>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ALGORITHMS -->
+
+<section
+  id="algorithms"
+  class="page">
+
+  <div class="card">
+
+    <h2>
+      Minimum Spanning Tree Algorithms
+    </h2>
+
+    <p>
+
+      Select an algorithm to calculate the
+      minimum cost campus network.
+
+    </p>
+
+
+    <div class="algorithm-box">
+
+      <button onclick="runKruskal()">
+
+        Run Kruskal's Algorithm
+
+      </button>
+
+
+      <button onclick="runPrim()">
+
+        Run Prim's Algorithm
+
+      </button>
+
+    </div>
+
+
+    <div id="algorithmResult">
+
+      <div class="result-box">
+
+        <h3>
+          Algorithm Result
+        </h3>
+
+        <p>
+
+          Choose Kruskal or Prim to calculate
+          the MST.
+
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div
+    class="content-grid"
+    style="margin-top:22px;">
+
+    <div class="card">
+
+      <h3>
+        Kruskal's Algorithm
+      </h3>
+
+      <p>
+
+        Kruskal's algorithm sorts all edges
+        according to their weight and repeatedly
+        selects the smallest edge that does not
+        create a cycle.
+
+      </p>
+
+      <br>
+
+      <strong>
+        Steps:
+      </strong>
+
+      <ol
+        style="line-height:2;padding-left:22px;margin-top:10px;">
+
+        <li>
+          Sort all edges by increasing cost.
+        </li>
+
+        <li>
+          Select the cheapest edge.
+        </li>
+
+        <li>
+          Check whether it creates a cycle.
+        </li>
+
+        <li>
+          If there is no cycle, add it to MST.
+        </li>
+
+        <li>
+          Continue until all buildings are connected.
+        </li>
+
+      </ol>
+
+    </div>
+
+
+    <div class="card">
+
+      <h3>
+        Prim's Algorithm
+      </h3>
+
+      <p>
+
+        Prim's algorithm starts from one building
+        and repeatedly selects the cheapest edge
+        that connects the existing tree to a new
+        building.
+
+      </p>
+
+      <br>
+
+      <strong>
+        Steps:
+      </strong>
+
+      <ol
+        style="line-height:2;padding-left:22px;margin-top:10px;">
+
+        <li>
+          Choose a starting building.
+        </li>
+
+        <li>
+          Find the cheapest connecting edge.
+        </li>
+
+        <li>
+          Add the new building.
+        </li>
+
+        <li>
+          Repeat until all buildings are connected.
+        </li>
+
+      </ol>
+
+    </div>
+
+  </div>
+
+</section>
+
+
+<!-- ABOUT -->
+
+<section
+  id="about"
+  class="page">
+
+  <div class="card">
+
+    <h2>
+      About the Project
+    </h2>
+
+    <p>
+
+      <strong>
+        Project Title:
+      </strong>
+
+      Minimum Cost Campus Network using
+      Minimum Spanning Tree
+
+    </p>
+
+    <br>
+
+    <p>
+
+      This project demonstrates the practical
+      application of graph theory and Minimum
+      Spanning Tree algorithms in campus network
+      design.
+
+    </p>
+
+
+    <div class="info-grid">
+
+      <div class="info-item">
+
+        <h4>
+          Data Structure
+        </h4>
+
+        <p>
+          Weighted Graph
+        </p>
+
+      </div>
+
+
+      <div class="info-item">
+
+        <h4>
+          Algorithm 1
+        </h4>
+
+        <p>
+          Kruskal's Algorithm
+        </p>
+
+      </div>
+
+
+      <div class="info-item">
+
+        <h4>
+          Algorithm 2
+        </h4>
+
+        <p>
+          Prim's Algorithm
+        </p>
+
+      </div>
+
+
+      <div class="info-item">
+
+        <h4>
+          Technology
+        </h4>
+
+        <p>
+          HTML, CSS, JavaScript
+        </p>
+
+      </div>
+
+
+      <div class="info-item">
+
+        <h4>
+          Application
+        </h4>
+
+        <p>
+          Campus Network Planning
+        </p>
+
+      </div>
+
+
+      <div class="info-item">
+
+        <h4>
+          Goal
+        </h4>
+
+        <p>
+          Minimum Network Cost
+        </p>
+
+      </div>
+
+    </div>
+
+  </div>
+
+</section>
+
+</main>
+
+
+<footer>
+
+  <strong>
+    DHRUV
+  </strong>
+
+  — Minimum Cost Campus Network using MST
+
+  <br>
+
+  Graph Theory &amp; Discrete Mathematics Project
+
+</footer>
+
+
+<!-- ADD BUILDING MODAL -->
+
+<div
+  id="buildingModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <h3>
+      Add Campus Building
+    </h3>
+
+
+    <div class="form-group">
+
+      <label>
+        Building Name
+      </label>
+
+      <input
+        id="buildingName"
+        type="text"
+        placeholder="Example: Seminar Hall">
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="btn"
+        onclick="closeModals()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="btn btn-primary"
+        onclick="addBuilding()">
+
+        Add Building
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<!-- ADD CONNECTION MODAL -->
+
+<div
+  id="edgeModal"
+  class="modal">
+
+  <div class="modal-box">
+
+    <h3>
+      Add Network Connection
+    </h3>
+
+
+    <div class="form-group">
+
+      <label>
+        Building A
+      </label>
+
+      <select id="edgeA"></select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        Building B
+      </label>
+
+      <select id="edgeB"></select>
+
+    </div>
+
+
+    <div class="form-group">
+
+      <label>
+        Connection Cost
+      </label>
+
+      <input
+        id="edgeCost"
+        type="number"
+        min="1"
+        placeholder="Example: 5">
+
+    </div>
+
+
+    <div class="modal-actions">
+
+      <button
+        class="btn"
+        onclick="closeModals()">
+
+        Cancel
+
+      </button>
+
+
+      <button
+        class="btn btn-primary"
+        onclick="addEdge()">
+
+        Add Connection
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+
+<script>
+
+/* ==========================================
+   CAMPUS DATA
+========================================== */
+
+let nodes = [
+
+  {
+    id: "A",
+    name: "O BULDING",
+    x: 130,
+    y: 130,
+    image: "images/O.webp"
+  },
+
+  {
+    id: "B",
+    name: "Y BULDING",
+    x: 420,
+    y: 90,
+    image: "images/Y.jpg"
+  },
+
+  {
+    id: "C",
+    name: "S BULDING",
+    x: 720,
+    y: 150,
+    image: "images/S.png"
+  },
+
+  {
+    id: "D",
+    name: "SANDIP POLYTECHNICAL",
+    x: 220,
+    y: 400,
+    image: "images/POLY.webp"
+  },
+
+  {
+    id: "E",
+    name: "SCHOOL OF DESIGN",
+    x: 520,
+    y: 360,
+    image: "images/D.jpg"
+  },
+
+  {
+    id: "F",
+    name: "C BULDING",
+    x: 760,
+    y: 450,
+    image: "images/C.jpg"
+  },
+  {
+
+id: "G",
+    name: "SIPS (PHRAMA SCHOOL)",
+    x: 900,
+    y: 200,
+    image: "images/SIPS.jpg"
+
+
+
+  },
+  {
+    id: "H",
+    name: "SANDIP UNIVERSITY GATE",
+    x: 10,
+    y: 300,
+    image: "images/GATE.webp"
+  },
+
+    {
+      id: "I",
+    name: "SANDIP foundation GATE",
+    x: 950 ,
+    y: 50,
+    image: "images/F.png"
+
+
+    }
+
+
+
+
+  
+
+];
+
+
+let edges = [
+
+  {
+    from: "A",
+    to: "B",
+    weight: 4
+  },
+
+  {
+    from: "A",
+    to: "C",
+    weight: 3
+  },
+
+  {
+    from: "B",
+    to: "C",
+    weight: 2
+  },
+
+  {
+    from: "B",
+    to: "D",
+    weight: 5
+  },
+
+  {
+    from: "C",
+    to: "D",
+    weight: 7
+  },
+
+  {
+    from: "C",
+    to: "E",
+    weight: 6
+  },
+
+  {
+    from: "D",
+    to: "E",
+    weight: 4
+  },
+
+  {
+    from: "D",
+    to: "F",
+    weight: 3
+  },
+
+  
+  {
+    from: "E",
+    to: "F",
+    weight: 2
+  },
+  {
+    from: "G",
+    to: "E",
+    weight: 4
+  },
+  {
+
+ from: "A",
+    to: "H",
+    weight: 7
+  },
+  {
+
+from: "H",
+    to: "D",
+    weight: 1
+
+
+
+
+  },
+
+  {
+from : "C",
+    to: "I",
+    weight: 5
+
+
+
+
+  },
+  {
+from : "I",
+    to: "G",
+    weight: 3
+
+
+
+
+  },
+  {
+from : "G",
+    to: "F",
+    weight: 2
+
+
+
+  }
+];
+
+
+let mstEdges = [];
+
+
+/* ==========================================
+   PAGE NAVIGATION
+========================================== */
+
+document
+  .querySelectorAll(".nav-btn")
+  .forEach(button => {
+
+    button.addEventListener(
+      "click",
+      () => {
+
+        showPage(
+          button.dataset.page
+        );
+
+      }
+    );
+
+  });
+
+
+function showPage(pageId) {
+
+  document
+    .querySelectorAll(".page")
+    .forEach(page => {
+
+      page.classList.remove(
+        "active"
+      );
+
+    });
+
+
+  document
+    .getElementById(pageId)
+    .classList.add("active");
+
+
+  document
+    .querySelectorAll(".nav-btn")
+    .forEach(button => {
+
+      button.classList.toggle(
+        "active",
+        button.dataset.page === pageId
+      );
+
+    });
+
+
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth"
+  });
+
+}
+
+
+/* ==========================================
+   GRAPH DRAWING
+========================================== */
+
+function drawGraph() {
+
+  const svg =
+    document.getElementById(
+      "graphSvg"
+    );
+
+
+  svg.innerHTML = "";
+
+
+  /* DRAW EDGES */
+
+  edges.forEach(edge => {
+
+    const a =
+      nodes.find(
+        n => n.id === edge.from
+      );
+
+
+    const b =
+      nodes.find(
+        n => n.id === edge.to
+      );
+
+
+    if (!a || !b) return;
+
+
+    const line =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "line"
+      );
+
+
+    line.setAttribute(
+      "x1",
+      a.x
+    );
+
+    line.setAttribute(
+      "y1",
+      a.y
+    );
+
+    line.setAttribute(
+      "x2",
+      b.x
+    );
+
+    line.setAttribute(
+      "y2",
+      b.y
+    );
+
+
+    const isMst =
+      mstEdges.some(
+        e =>
+          (
+            e.from === edge.from &&
+            e.to === edge.to
+          ) ||
+          (
+            e.from === edge.to &&
+            e.to === edge.from
+          )
+      );
+
+
+    line.setAttribute(
+      "class",
+      isMst
+        ? "edge-line mst"
+        : "edge-line"
+    );
+
+
+    svg.appendChild(line);
+
+
+    /* EDGE COST */
+
+    const text =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+
+
+    text.setAttribute(
+      "x",
+      (a.x + b.x) / 2
+    );
+
+
+    text.setAttribute(
+      "y",
+      (a.y + b.y) / 2 - 8
+    );
+
+
+    text.setAttribute(
+      "class",
+      "edge-cost"
+    );
+
+
+    text.textContent =
+      edge.weight;
+
+
+    svg.appendChild(text);
+
+  });
+
+
+  /* ========================================
+     DRAW BUILDING IMAGES
+  ======================================== */
+
+  nodes.forEach(node => {
+
+    /*
+      SVG definitions
+      for circular image
+    */
+
+    const defs =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "defs"
+      );
+
+
+    const clip =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "clipPath"
+      );
+
+
+    const clipId =
+      "clip-" + node.id;
+
+
+    clip.setAttribute(
+      "id",
+      clipId
+    );
+
+
+    const clipCircle =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+
+
+    clipCircle.setAttribute(
+      "cx",
+      node.x
+    );
+
+
+    clipCircle.setAttribute(
+      "cy",
+      node.y
+    );
+
+
+    clipCircle.setAttribute(
+      "r",
+      38
+    );
+
+
+    clip.appendChild(
+      clipCircle
+    );
+
+    defs.appendChild(
+      clip
+    );
+
+    svg.appendChild(
+      defs
+    );
+
+
+    /* BUILDING IMAGE */
+
+    const image =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "image"
+      );
+
+
+    image.setAttribute(
+      "href",
+      node.image
+    );
+
+
+    image.setAttribute(
+      "x",
+      node.x - 38
+    );
+
+
+    image.setAttribute(
+      "y",
+      node.y - 38
+    );
+
+
+    image.setAttribute(
+      "width",
+      76
+    );
+
+
+    image.setAttribute(
+      "height",
+      76
+    );
+
+
+    image.setAttribute(
+      "preserveAspectRatio",
+      "xMidYMid slice"
+    );
+
+
+    image.setAttribute(
+      "clip-path",
+      `url(#${clipId})`
+    );
+
+
+    image.setAttribute(
+      "class",
+      "building-image"
+    );
+
+
+    svg.appendChild(
+      image
+    );
+
+
+    /* IMAGE BORDER */
+
+    const border =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+
+
+    border.setAttribute(
+      "cx",
+      node.x
+    );
+
+
+    border.setAttribute(
+      "cy",
+      node.y
+    );
+
+
+    border.setAttribute(
+      "r",
+      39
+    );
+
+
+    border.setAttribute(
+      "fill",
+      "none"
+    );
+
+
+    border.setAttribute(
+      "stroke",
+      "#007AFF"
+    );
+
+
+    border.setAttribute(
+      "stroke-width",
+      "4"
+    );
+
+
+    svg.appendChild(
+      border
+    );
+
+
+    /* BUILDING ID CIRCLE */
+
+    const idCircle =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "circle"
+      );
+
+
+    idCircle.setAttribute(
+      "cx",
+      node.x + 27
+    );
+
+
+    idCircle.setAttribute(
+      "cy",
+      node.y - 27
+    );
+
+
+    idCircle.setAttribute(
+      "r",
+      13
+    );
+
+
+    idCircle.setAttribute(
+      "fill",
+      "#007AFF"
+    );
+
+
+    svg.appendChild(
+      idCircle
+    );
+
+
+    /* BUILDING ID */
+
+    const idText =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+
+
+    idText.setAttribute(
+      "x",
+      node.x + 27
+    );
+
+
+    idText.setAttribute(
+      "y",
+      node.y - 27
+    );
+
+
+    idText.setAttribute(
+      "class",
+      "building-id"
+    );
+
+
+    idText.textContent =
+      node.id;
+
+
+    svg.appendChild(
+      idText
+    );
+
+
+    /* BUILDING NAME */
+
+    const name =
+      document.createElementNS(
+        "http://www.w3.org/2000/svg",
+        "text"
+      );
+
+
+    name.setAttribute(
+      "x",
+      node.x
+    );
+
+
+    name.setAttribute(
+      "y",
+      node.y + 62
+    );
+
+
+    name.setAttribute(
+      "class",
+      "building-name"
+    );
+
+
+    name.setAttribute(
+      "text-anchor",
+      "middle"
+    );
+
+
+    name.textContent =
+      node.name;
+
+
+    svg.appendChild(
+      name
+    );
+
+  });
+
+
+  updateTable();
+
+  updateStats();
+
+}
+
+
+/* ==========================================
+   UNION FIND
+========================================== */
+
+class UnionFind {
+
+  constructor(items) {
+
+    this.parent = {};
+
+    items.forEach(item => {
+
+      this.parent[item] =
+        item;
+
+    });
+
+  }
+
+
+  find(x) {
+
+    if (
+      this.parent[x] !== x
+    ) {
+
+      this.parent[x] =
+        this.find(
+          this.parent[x]
+        );
+
+    }
+
+
+    return this.parent[x];
+
+  }
+
+
+  union(a, b) {
+
+    const rootA =
+      this.find(a);
+
+    const rootB =
+      this.find(b);
+
+
+    if (
+      rootA === rootB
+    ) {
+
+      return false;
+
+    }
+
+
+    this.parent[rootB] =
+      rootA;
+
+
+    return true;
+
+  }
+
+}
+
+
+/* ==========================================
+   KRUSKAL
+========================================== */
+
+function runKruskal() {
+
+  const sortedEdges =
+    [...edges].sort(
+      (a, b) =>
+        a.weight - b.weight
+    );
+
+
+  const uf =
+    new UnionFind(
+      nodes.map(
+        n => n.id
+      )
+    );
+
+
+  const selected = [];
+
+  const steps = [];
+
+
+  for (
+    const edge of sortedEdges
+  ) {
+
+    const accepted =
+      uf.union(
+        edge.from,
+        edge.to
+      );
+
+
+    if (accepted) {
+
+      selected.push(
+        edge
+      );
+
+
+      steps.push(
+        `Selected ${getNodeName(edge.from)}
+        — ${getNodeName(edge.to)}
+        (cost ${edge.weight})`
+      );
+
+    }
+
+    else {
+
+      steps.push(
+        `Rejected ${getNodeName(edge.from)}
+        — ${getNodeName(edge.to)}
+        because it creates a cycle`
+      );
+
+    }
+
+
+    if (
+      selected.length ===
+      nodes.length - 1
+    ) {
+
+      break;
+
+    }
+
+  }
+
+
+  mstEdges =
+    selected;
+
+
+  drawGraph();
+
+
+  showAlgorithmResult(
+    "Kruskal's Algorithm",
+    selected,
+    steps
+  );
+
+}
+
+
+/* ==========================================
+   PRIM
+========================================== */
+
+function runPrim() {
+
+  if (
+    nodes.length === 0
+  ) {
+
+    return;
+
+  }
+
+
+  const visited =
+    new Set();
+
+
+  const selected = [];
+
+  const steps = [];
+
+
+  const start =
+    nodes[0].id;
+
+
+  visited.add(start);
+
+
+  while (
+    visited.size <
+    nodes.length
+  ) {
+
+    let bestEdge =
+      null;
+
+
+    for (
+      const edge of edges
+    ) {
+
+      const fromVisited =
+        visited.has(
+          edge.from
+        );
+
+
+      const toVisited =
+        visited.has(
+          edge.to
+        );
+
+
+      if (
+        fromVisited !==
+        toVisited
+      ) {
+
+        if (
+          !bestEdge ||
+          edge.weight <
+          bestEdge.weight
+        ) {
+
+          bestEdge =
+            edge;
+
+        }
+
+      }
+
+    }
+
+
+    if (
+      !bestEdge
+    ) {
+
+      break;
+
+    }
+
+
+    selected.push(
+      bestEdge
+    );
+
+
+    steps.push(
+      `Selected ${getNodeName(bestEdge.from)}
+      — ${getNodeName(bestEdge.to)}
+      (cost ${bestEdge.weight})`
+    );
+
+
+    visited.add(
+      bestEdge.from
+    );
+
+
+    visited.add(
+      bestEdge.to
+    );
+
+  }
+
+
+  mstEdges =
+    selected;
+
+
+  drawGraph();
+
+
+  showAlgorithmResult(
+    "Prim's Algorithm",
+    selected,
+    steps
+  );
+
+}
+
+
+/* ==========================================
+   RESULT
+========================================== */
+
+function showAlgorithmResult(
+  algorithm,
+  selected,
+  steps
+) {
+
+  const totalCost =
+    selected.reduce(
+      (sum, edge) =>
+        sum +
+        Number(edge.weight),
+      0
+    );
+
+
+  const result =
+    document.getElementById(
+      "algorithmResult"
+    );
+
+
+  result.innerHTML = `
+
+    <div class="result-box">
+
+      <h3>
+        ${algorithm} Result
+      </h3>
+
+      <div class="result-cost">
+        Total Cost: ${totalCost}
+      </div>
+
+      <p>
+        MST contains
+        <strong>
+          ${selected.length}
+        </strong>
+        connections.
+      </p>
+
+      <br>
+
+      <h4>
+        Selected Connections
+      </h4>
+
+      ${selected.map(edge => `
+
+        <div class="step">
+
+          ✓ ${getNodeName(edge.from)}
+          →
+          ${getNodeName(edge.to)}
+
+          &nbsp; | &nbsp;
+
+          Cost:
+          <strong>
+            ${edge.weight}
+          </strong>
+
+        </div>
+
+      `).join("")}
+
+      <br>
+
+      <h4>
+        Algorithm Steps
+      </h4>
+
+      ${steps.map(step => `
+
+        <div class="step">
+          ${step}
+        </div>
+
+      `).join("")}
+
+    </div>
+
+  `;
+
+}
+
+
+/* ==========================================
+   TABLE
+========================================== */
+
+function updateTable() {
+
+  const tbody =
+    document.getElementById(
+      "edgeTable"
+    );
+
+
+  tbody.innerHTML = "";
+
+
+  edges.forEach(edge => {
+
+    const isMst =
+      mstEdges.some(
+        e =>
+          (
+            e.from ===
+            edge.from &&
+            e.to ===
+            edge.to
+          ) ||
+          (
+            e.from ===
+            edge.to &&
+            e.to ===
+            edge.from
+          )
+      );
+
+
+    const row =
+      document.createElement(
+        "tr"
+      );
+
+
+    if (isMst) {
+
+      row.classList.add(
+        "mst-row"
+      );
+
+    }
+
+
+    row.innerHTML = `
+
+      <td>
+        ${getNodeName(edge.from)}
+      </td>
+
+      <td>
+        ${getNodeName(edge.to)}
+      </td>
+
+      <td>
+        <strong>
+          ${edge.weight}
+        </strong>
+      </td>
+
+      <td>
+        ${
+          isMst
+          ? "✓ Selected"
+          : "—"
+        }
+      </td>
+
+    `;
+
+
+    tbody.appendChild(
+      row
+    );
+
+  });
+
+}
+
+
+/* ==========================================
+   STATISTICS
+========================================== */
+
+function updateStats() {
+
+  const totalCost =
+    mstEdges.reduce(
+      (sum, edge) =>
+        sum +
+        Number(edge.weight),
+      0
+    );
+
+
+  document.getElementById(
+    "homeNodes"
+  ).textContent =
+    nodes.length;
+
+
+  document.getElementById(
+    "homeEdges"
+  ).textContent =
+    edges.length;
+
+
+  document.getElementById(
+    "homeMst"
+  ).textContent =
+    mstEdges.length;
+
+
+  document.getElementById(
+    "homeCost"
+  ).textContent =
+    totalCost;
+
+}
+
+
+/* ==========================================
+   GET BUILDING NAME
+========================================== */
+
+function getNodeName(id) {
+
+  const node =
+    nodes.find(
+      n => n.id === id
+    );
+
+
+  return node
+    ? node.name
+    : id;
+
+}
+
+
+/* ==========================================
+   MODALS
+========================================== */
+
+function openBuildingModal() {
+
+  document
+    .getElementById(
+      "buildingModal"
+    )
+    .classList.add("show");
+
+}
+
+
+function openEdgeModal() {
+
+  updateEdgeSelects();
+
+
+  document
+    .getElementById(
+      "edgeModal"
+    )
+    .classList.add("show");
+
+}
+
+
+function closeModals() {
+
+  document
+    .querySelectorAll(
+      ".modal"
+    )
+    .forEach(modal => {
+
+      modal.classList.remove(
+        "show"
+      );
+
+    });
+
+}
+
+
+/* ==========================================
+   ADD BUILDING
+========================================== */
+
+function addBuilding() {
+
+  const input =
+    document.getElementById(
+      "buildingName"
+    );
+
+
+  const name =
+    input.value.trim();
+
+
+  if (!name) {
+
+    alert(
+      "Please enter a building name."
+    );
+
+    return;
+
+  }
+
+
+  const letters =
+    "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+
+
+  let id =
+    letters[nodes.length];
+
+
+  if (!id) {
+
+    id =
+      "N" +
+      (nodes.length + 1);
+
+  }
+
+
+  const position =
+    getNextPosition();
+
+
+  nodes.push({
+
+    id: id,
+
+    name: name,
+
+    x: position.x,
+
+    y: position.y,
+
+    /*
+      New buildings use a
+      default building image.
+    */
+
+    image:
+      "images/main-block.jpg"
+
+  });
+
+
+  input.value = "";
+
+
+  closeModals();
+
+
+  mstEdges = [];
+
+
+  drawGraph();
+
+}
+
+
+/* ==========================================
+   POSITION
+========================================== */
+
+function getNextPosition() {
+
+  const positions = [
+
+    {
+      x: 120,
+      y: 130
+    },
+
+    {
+      x: 430,
+      y: 100
+    },
+
+    {
+      x: 750,
+      y: 140
+    },
+
+    {
+      x: 200,
+      y: 400
+    },
+
+    {
+      x: 520,
+      y: 360
+    },
+
+    {
+      x: 760,
+      y: 450
+    },
+
+    {
+      x: 450,
+      y: 500
+    },
+
+    {
+      x: 100,
+      y: 280
+    },
+
+    {
+      x: 800,
+      y: 280
+    }
+
+  ];
+
+
+  return positions[
+    nodes.length %
+    positions.length
+  ];
+
+}
+
+
+/* ==========================================
+   EDGE SELECTS
+========================================== */
+
+function updateEdgeSelects() {
+
+  const a =
+    document.getElementById(
+      "edgeA"
+    );
+
+
+  const b =
+    document.getElementById(
+      "edgeB"
+    );
+
+
+  a.innerHTML = "";
+
+  b.innerHTML = "";
+
+
+  nodes.forEach(node => {
+
+    const optionA =
+      document.createElement(
+        "option"
+      );
+
+
+    optionA.value =
+      node.id;
+
+
+    optionA.textContent =
+      node.name;
+
+
+    a.appendChild(
+      optionA
+    );
+
+
+    const optionB =
+      document.createElement(
+        "option"
+      );
+
+
+    optionB.value =
+      node.id;
+
+
+    optionB.textContent =
+      node.name;
+
+
+    b.appendChild(
+      optionB
+    );
+
+  });
+
+}
+
+
+/* ==========================================
+   ADD EDGE
+========================================== */
+
+function addEdge() {
+
+  const from =
+    document.getElementById(
+      "edgeA"
+    ).value;
+
+
+  const to =
+    document.getElementById(
+      "edgeB"
+    ).value;
+
+
+  const weight =
+    Number(
+      document.getElementById(
+        "edgeCost"
+      ).value
+    );
+
+
+  if (
+    from === to
+  ) {
+
+    alert(
+      "A building cannot connect to itself."
+    );
+
+    return;
+
+  }
+
+
+  if (
+    !weight ||
+    weight <= 0
+  ) {
+
+    alert(
+      "Enter a valid connection cost."
+    );
+
+    return;
+
+  }
+
+
+  const exists =
+    edges.some(
+      edge =>
+        (
+          edge.from === from &&
+          edge.to === to
+        ) ||
+        (
+          edge.from === to &&
+          edge.to === from
+        )
+    );
+
+
+  if (exists) {
+
+    alert(
+      "This connection already exists."
+    );
+
+    return;
+
+  }
+
+
+  edges.push({
+
+    from: from,
+
+    to: to,
+
+    weight: weight
+
+  });
+
+
+  document.getElementById(
+    "edgeCost"
+  ).value = "";
+
+
+  closeModals();
+
+
+  mstEdges = [];
+
+
+  drawGraph();
+
+}
+
+
+/* ==========================================
+   RESET CAMPUS
+========================================== */
+
+function resetCampus() {
+
+  if (
+    !confirm(
+      "Reset the campus network?"
+    )
+  ) {
+
+    return;
+
+  }
+
+
+  nodes = [
+
+    {
+      id: "A",
+      name: "Main Block",
+      x: 130,
+      y: 130,
+      image: "images/main-block.jpg"
+    },
+
+    {
+      id: "B",
+      name: "Library",
+      x: 420,
+      y: 90,
+      image: "images/library.jpg"
+    },
+
+    {
+      id: "C",
+      name: "CSE Block",
+      x: 720,
+      y: 150,
+      image: "images/cse.jpg"
+    },
+
+    {
+      id: "D",
+      name: "ECE Block",
+      x: 220,
+      y: 400,
+      image: "images/ece.jpg"
+    },
+
+    {
+      id: "E",
+      name: "Hostel",
+      x: 520,
+      y: 360,
+      image: "images/hostel.jpg"
+    },
+
+    {
+      id: "F",
+      name: "Laboratory",
+      x: 760,
+      y: 450,
+      image: "images/laboratory.jpg"
+    }
+
+  ];
+
+
+  edges = [
+
+    {
+      from: "A",
+      to: "B",
+      weight: 4
+    },
+
+    {
+      from: "A",
+      to: "C",
+      weight: 3
+    },
+
+    {
+      from: "B",
+      to: "C",
+      weight: 2
+    },
+
+    {
+      from: "B",
+      to: "D",
+      weight: 5
+    },
+
+    {
+      from: "C",
+      to: "D",
+      weight: 7
+    },
+
+    {
+      from: "C",
+      to: "E",
+      weight: 6
+    },
+
+    {
+      from: "D",
+      to: "E",
+      weight: 4
+    },
+
+    {
+      from: "D",
+      to: "F",
+      weight: 3
+    },
+
+    {
+      from: "E",
+      to: "F",
+      weight: 2
+    }
+
+  ];
+
+
+  mstEdges = [];
+
+
+  drawGraph();
+
+
+  document.getElementById(
+    "algorithmResult"
+  ).innerHTML = `
+
+    <div class="result-box">
+
+      <h3>
+        Algorithm Result
+      </h3>
+
+      <p>
+
+        Campus has been reset.
+        Select Kruskal or Prim to calculate
+        the Minimum Spanning Tree.
+
+      </p>
+
+    </div>
+
+  `;
+
+}
+
+
+/* ==========================================
+   INITIALIZE
+========================================== */
+
+drawGraph();
+
+</script>
+
+</body>
+</html>
